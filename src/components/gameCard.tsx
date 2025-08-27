@@ -57,6 +57,8 @@ export const GameCard = ({ game }: GameCardProps) => {
                 textDecoration: 'none', 
                 width: '100%',
                 perspective: '1000px',
+                display: 'flex',
+                justifyContent: 'center'
             }}
         >
             <Card

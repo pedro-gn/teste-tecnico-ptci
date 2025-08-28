@@ -121,8 +121,8 @@ export const GameCard = ({ game }: GameCardProps) => {
 
 //Skeleton de carregamento das cards do jogos
 export const GameCardSkeleton = () => (
-    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', minWidth: 300, maxWidth: 300, borderRadius: 3 }}>
-        <Skeleton variant="rectangular" height={373} sx={{borderRadius: 3}} />
+    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', minWidth: 300, maxWidth: 300, borderRadius: 3, justifyContent: 'center'}}>
+        <Skeleton variant="rectangular" height={373}  sx={{borderRadius: 3, display: 'flex', justifyContent: 'center'}}  />
         <CardContent>
             <Skeleton variant="text" sx={{ fontSize: '1.25rem' }} />
             <Skeleton variant="text" width="60%" />

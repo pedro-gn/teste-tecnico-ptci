@@ -27,7 +27,7 @@ export async function GET(
         'Client-ID': process.env.TWITCH_CLIENT_ID,
         'Authorization': `Bearer ${accessToken}`,
       } as HeadersInit,
-      body: `fields name, summary, screenshots.url, first_release_date, videos.video_id, cover.url, total_rating, aggregated_rating, genres.name, platforms.abbreviation; 
+      body: `fields name, summary, similar_games, screenshots.url, first_release_date, videos.video_id, cover.url, total_rating, aggregated_rating, genres.name, platforms.abbreviation; 
         where id = ${game_id};`,
     });
 

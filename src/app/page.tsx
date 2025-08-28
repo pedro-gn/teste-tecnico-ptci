@@ -143,7 +143,7 @@ export default function Home() {
                 <Grid container spacing={4} sx={{ justifyContent: "center" }}>
                     {initialLoad.current && isLoading
                         ? Array.from(new Array(10)).map((_, index) => (
-                            <Grid key={index} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                            <Grid key={index} size={{ xs: 12, sm: 6, md: 4, lg: 3 }} sx={{display: 'flex', justifyContent:'center'}}>
                                 <GameCardSkeleton />
                             </Grid>
                         ))

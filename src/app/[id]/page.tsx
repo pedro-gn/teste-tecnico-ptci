@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
-    Box, Container, Typography, Grid, Chip, Paper, Skeleton, Alert, Button
+    Box, Container, Typography, Grid, Chip, Paper, Skeleton, Alert, Button, Divider
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StarIcon from '@mui/icons-material/Star';
 
+import { Game, GameCard, GameCardSkeleton } from '@/components/gameCard';
 
 //estrutura dos dados que vem da api para esse pagina(de um jogo especifico)
 type GameDetails = {
@@ -22,6 +23,7 @@ type GameDetails = {
     platforms?: { abbreviation: string }[];
     first_release_date?: number;
     total_rating?: number;
+    similar_games?: number[];
 }
 
 //Skeleton
@@ -71,6 +73,10 @@ export default function Page() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
+
+    const [similarGames, setSimilarGames] = useState<Game[]>([]);
+    const [isSimilarLoading, setIsSimilarLoading] = useState<boolean>(false);
+
     useEffect(() => {
         if (!game_id) return;
 
@@ -106,6 +112,36 @@ export default function Page() {
         fetchGameData();
     }, [game_id]);
 
+    useEffect(() => {
+
+        if (game && game.similar_games && game.similar_games.length > 0) {
+            const fetchSimilarGames = async () => {
+                setIsSimilarLoading(true);
+                try {
+                    const response = await fetch('/api/games/similarGames', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ similarGames: game.similar_games }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch similar games.');
+                    }
+                    const similarGamesData = await response.json();
+                    setSimilarGames(similarGamesData);
+
+                } catch (err) {
+                    console.error(err);
+                } finally {
+                    setIsSimilarLoading(false);
+                }
+            };
+
+            fetchSimilarGames();
+        }
+    }, [game]); 
 
     if (isLoading) {
         return (
@@ -251,6 +287,28 @@ export default function Page() {
                         )}
                     </Grid>
                 </Grid>
+                { (isSimilarLoading || similarGames.length > 0) && (
+                    <Box sx={{ mt: 8 }}>
+                        <Typography variant="h4" component="h2" gutterBottom>
+                            Jogos Semelhantes
+                        </Typography>
+                        <Divider sx={{ mb: 4, borderColor: 'rgba(255, 255, 255, 0.2)' }} />
+                        <Grid container spacing={4}>
+                            {isSimilarLoading
+                                ? Array.from(new Array(4)).map((_, index) => (
+                                    <Grid  key={index} size={{xs:12, sm:6, md:4}} display="flex" justifyContent="center">
+                                        <GameCardSkeleton />
+                                    </Grid>
+                                ))
+                                : similarGames.map((similarGame) => (
+                                    <Grid  key={similarGame.id} size={{xs:12, sm:6, md:4}} display="flex" justifyContent="center">
+                                        <GameCard game={similarGame} />
+                                    </Grid>
+                                ))
+                            }
+                        </Grid>
+                    </Box>
+                )}
             </Container>
         </Box>
     )
